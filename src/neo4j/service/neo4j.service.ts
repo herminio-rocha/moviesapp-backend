@@ -25,6 +25,7 @@ export class Neo4jService implements OnApplicationShutdown {
     ) {
         const session = this.getSession(database);
         const result = await session.run(cypher, params);
+        session.close();
 
         return result;
     }
