@@ -2,13 +2,17 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
-import { MoviesModule } from './movies/movies.module';
+import { MovieModule } from './movies/module/movie.module';
 import { join } from 'path';
+import { Neo4jModule } from './neo4j/module/neo4j.module';
 
 @Module({
   imports: [
-    MoviesModule,
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
+    MovieModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
@@ -20,6 +24,7 @@ import { join } from 'path';
         timestamp: new Date().toISOString(),
       }),
     }),
+    Neo4jModule,
   ],
   controllers: [],
   providers: [],
