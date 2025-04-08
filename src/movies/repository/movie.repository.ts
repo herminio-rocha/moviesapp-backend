@@ -39,4 +39,14 @@ export class MovieRepository {
 
         return await this.neo4jService.read(query, params);
     }
+
+    async getTotalItems() {
+        const query =
+            `
+                MATCH (m:Movie) RETURN count(m) as total
+            `;
+
+        const result = await this.neo4jService.read(query);
+        return result.records[0].get('total').toNumber();
+    }
 }
