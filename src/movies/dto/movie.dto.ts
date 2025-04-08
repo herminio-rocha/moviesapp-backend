@@ -1,7 +1,7 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 
 @ObjectType()
-export class MovieDetails {
+export class Movie {
     @Field()
     title: string;
 
@@ -10,17 +10,12 @@ export class MovieDetails {
 
     @Field(() => [String])
     directors: string[];
-
-    @Field(() => [String])
-    actors: string[];
-
 }
 
-export function mapNeo4jRecordToMovieDetails(record: any): MovieDetails {
+export function mapNeo4jRecordToMovie(record: any): Movie {
     return {
         title: record.get('title'),
         year: record.get('year').low,
         directors: record.get('directors'),
-        actors: record.get('actors'),
     };
 }
