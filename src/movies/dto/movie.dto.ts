@@ -10,6 +10,9 @@ export class Movie {
 
     @Field(() => [String])
     directors: string[];
+
+    @Field(() => [String])
+    actors: string[];
 }
 
 export function mapNeo4jRecordToMovie(record: any): Movie {
@@ -17,5 +20,6 @@ export function mapNeo4jRecordToMovie(record: any): Movie {
         title: record.get('title'),
         year: record.get('year').low,
         directors: record.get('directors'),
+        actors: record.get('actors'),
     };
 }
