@@ -12,7 +12,11 @@ export class MovieRepository {
         const query =
             `
                 MATCH (m:Movie)<-[:DIRECTED]-(d:Person)
-                RETURN m.title AS title, m.released AS year, collect(d.name) AS directors
+                OPTIONAL MATCH (a:Person)-[:ACTED_IN]->(m)
+                RETURN m.title AS title,
+                    m.released AS year,
+                    collect(DISTINCT d.name) AS directors,
+                    collect(DISTINCT a.name) AS actors
                 ORDER BY m.released DESC
                 SKIP $offset
                 LIMIT $limit
@@ -21,21 +25,6 @@ export class MovieRepository {
             offset: Integer.fromNumber(pagination.offset),
             limit: Integer.fromNumber(pagination.limit),
         }
-
-        return await this.neo4jService.read(query, params);
-    }
-
-    async findMovieDetails(title: string) {
-        const query =
-            `
-                MATCH (m:Movie {title: $title})
-                OPTIONAL MATCH (m)<-[:DIRECTED]-(d:Person)
-                OPTIONAL MATCH (a:Person)-[:ACTED_IN]->(m)
-                RETURN m.title AS title, m.released AS year,
-                        collect(DISTINCT d.name) AS directors,
-                        collect(DISTINCT a.name) AS actors
-            `;
-        const params = { title };
 
         return await this.neo4jService.read(query, params);
     }
